@@ -1,36 +1,34 @@
-
 import { luvaChangeOut } from "./luvaOut";
-//=========================================================
-//! LUVA ENGINE ⚙️  INPUTS
-//=========================================================
 
-export const luvaInChange = <T>(um: T) => {
-  //! Listeners
-  const listernerUm: ((v: T) => void)[] = [];
-  //=================================
-  //! Getters e Setters
-  let inputUm = um;
-  const get = () => {
-    return inputUm;
-  };
-  const set = (novoValorInputUm: T) => {
-    inputUm = novoValorInputUm;
-    listernerUm.forEach((v) => v(inputUm));
-  };
-  //==================================
-  //! Subscribes
-  const subscribeUm = (f: (v: T) => void) => {
-    listernerUm.push(f);
-    return () => {
-      const index = listernerUm.indexOf(f);
-      if (index > -1) listernerUm.splice(index, 1);
+//=========================================================
+//! LUVA ENGINE ⚙️ INPUT
+//=========================================================
+export const luvaInChange = <T>(inputInicial: T, output?: ReturnType<typeof luvaChangeOut>) => {
+    const listenersInput: ((v: T) => void)[] = [];
+
+    let input = inputInicial;
+
+    const get = () => input;
+
+    const set = (novoValor: T) => {
+        input = novoValor;
+
+      
+        listenersInput.forEach(f => f(input));
+
+        if (output) output.set(input);
     };
-  };
-  subscribeUm(v => luvaChangeOut(v));
-  
-  return {
-    get,
-    set,
-    subscribeUm,
-  };
+
+    const subscribe = (f: (v: T) => void) => {
+        listenersInput.push(f);
+        return () => {
+            const index = listenersInput.indexOf(f);
+            if (index > -1) listenersInput.splice(index, 1);
+        };
+    };
+
+    
+    if (output) subscribe((v) => output.set(v));
+
+    return { get, set, subscribe };
 };
