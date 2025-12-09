@@ -1,9 +1,12 @@
-import { luvaInChange } from "./luvaengine/luvaIn";
+import { luvaEng } from "./luvaengine/luvaIn";
 
-const inputDOM = document.getElementById('input') as HTMLInputElement;
-const msgDOM   = document.getElementById('mensagem') as HTMLDivElement;
-
-// input dispara motor, tudo atualiza sozinho
-inputDOM.addEventListener('input', e => 
-  luvaInChangee((e.target as HTMLInputElement).value, v => msgDOM.textContent = v)
-);
+const input = document.getElementById('input')
+input?.addEventListener('input', () => {
+  luva.set(input)
+})
+const luva = luvaEng('')
+let minhaVariavel
+luva.luvaChangeOut((e) => {
+  minhaVariavel = e.value
+  console.log(minhaVariavel)
+})

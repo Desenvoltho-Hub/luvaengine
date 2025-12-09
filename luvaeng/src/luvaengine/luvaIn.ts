@@ -1,34 +1,46 @@
-import { luvaChangeOut } from "./luvaOut";
-
 //=========================================================
 //! LUVA ENGINE ⚙️ INPUT
 //=========================================================
-export const luvaInChange = <T>(inputInicial: T, output?: ReturnType<typeof luvaChangeOut>) => {
-    const listenersInput: ((v: T) => void)[] = [];
+export const luvaEng = <T>(input: T) => {
+  //! Listeners
+  const listeners:((v: T) => void)[] = []
+  
+  //=======================================================
+  //! Getters e setters
+  //=======================================================
+  let valor: T
+  const get = () => {
+    return valor
+  }
+  const set = (novoValor: T) => {
+    valor = novoValor
+    listeners.forEach(v => v(valor))
+  }
+  //! Subscribes
+  const subscribes = (f:(v: T) => void) => {
+    listeners.push(f)
+    return () => {
+      const index = listeners.indexOf(f)
+      listeners.splice(index, 1)
+    }
+  }
+  //! Submotores
+  
+  //! Output
+  
 
-    let input = inputInicial;
-
-    const get = () => input;
-
-    const set = (novoValor: T) => {
-        input = novoValor;
-
-      
-        listenersInput.forEach(f => f(input));
-
-        if (output) output.set(input);
-    };
-
-    const subscribe = (f: (v: T) => void) => {
-        listenersInput.push(f);
-        return () => {
-            const index = listenersInput.indexOf(f);
-            if (index > -1) listenersInput.splice(index, 1);
-        };
-    };
-
+   const luvaChangeOut = (cb: (v: T) => void) => {
+  subscribes((v) => {
+    if (v instanceof HTMLInputElement) cb(v)
+  });
+}
+  
+  return {
+    get,
+    set,
+    luvaChangeOut
     
-    if (output) subscribe((v) => output.set(v));
 
-    return { get, set, subscribe };
-};
+  }
+}
+
