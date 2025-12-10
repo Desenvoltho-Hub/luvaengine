@@ -1,4 +1,4 @@
-import { luvaEng } from "./luvaengine/luvaIn";
+import { luvaEng } from "./luvaengine/luva";
 
 const input = document.getElementById('input')
 input?.addEventListener('input', () => {
